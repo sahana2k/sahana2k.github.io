@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bold Retro Portfolio</title>
+    <title>Sahana Jayasimha Holkal</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Outfit:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -281,15 +281,6 @@
             section.bg-maroon div[style*="marginTop: '2rem'"] a {
                 font-size: 0.85rem !important;
                 padding: 0.4rem 0.85rem !important;
-            }
-
-            /* Scroll indicator mobile adjustments */
-            section.bg-maroon div[style*="bottom: '2rem'"] {
-                bottom: 1rem !important;
-            }
-
-            section.bg-maroon div[style*="bottom: '2rem'"] p {
-                font-size: 0.75rem !important;
             }
 
             /* Reduce padding on mobile */
@@ -791,51 +782,6 @@
                                 </motion.div>
                             </motion.div>
                         </div>
-
-                        {/* Scroll Indicator */}
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 1.2, duration: 0.8 }}
-                            style={{
-                                position: 'absolute',
-                                bottom: '2rem',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '0.5rem'
-                            }}
-                        >
-                            <p className="body-font text-cream" style={{ fontSize: '0.875rem', opacity: 0.8, fontWeight: '600', letterSpacing: '0.05em' }}>
-                                SCROLL TO EXPLORE
-                            </p>
-                            <motion.div
-                                animate={{ y: [0, 8, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                style={{
-                                    width: '24px',
-                                    height: '36px',
-                                    border: '2px solid rgba(249, 244, 239, 0.5)',
-                                    borderRadius: '12px',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    paddingTop: '6px'
-                                }}
-                            >
-                                <motion.div
-                                    animate={{ opacity: [0, 1, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                    style={{
-                                        width: '4px',
-                                        height: '8px',
-                                        backgroundColor: '#FF6B4A',
-                                        borderRadius: '2px'
-                                    }}
-                                />
-                            </motion.div>
-                        </motion.div>
                     </div>
                 </section>
             );
@@ -917,7 +863,6 @@
                     main: {
                         title: "BE in Computer Science",
                         subtitle: "Bangalore Institute of Technology",
-                        details: ["Graduated with 8.94 CGPA", "Published research on Sign Language Recognition", "Built foundation in data structures, algorithms, and software engineering"],
                         icon: "GraduationCap",
                         bgColor: "#5D1725",
                         textColor: "#F9F4EF"
@@ -982,7 +927,6 @@
                     main: {
                         title: "Master's in Computer Science",
                         subtitle: "Arizona State University",
-                        details: ["Maintaining 4.0 CGPA", "Excelled in Foundations of Algorithms", "Building web mining and agentic AI projects"],
                         status: "Current",
                         icon: "GraduationCap",
                         bgColor: "#FF6B4A",
@@ -1091,16 +1035,16 @@
                                     </div>
 
                                     {/* Split Layout */}
-                                    <div className="grid gap-8" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'center', position: 'relative' }}>
+                                    <div className="grid gap-8" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'start', position: 'relative' }}>
                                         {/* LEFT: Main Track */}
                                         <div style={{ paddingRight: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
                                             <motion.div
                                                 whileHover={{ scale: 1.03, rotate: -1 }}
-                                                className="rounded-3xl shadow-2xl p-8"
+                                                className="rounded-3xl shadow-2xl p-6"
                                                 style={{
                                                     backgroundColor: timeframe.main.bgColor,
                                                     color: timeframe.main.textColor,
-                                                    maxWidth: '460px',
+                                                    maxWidth: '400px',
                                                     width: '100%',
                                                     position: 'relative'
                                                 }}
@@ -1372,15 +1316,15 @@
                 },
                 {
                     id: 4,
-                    title: "Paperclip – All-in-One AI Research Companion",
-                    description: "A unified AI-powered platform that simplifies the research journey for students and researchers by bringing discovery, understanding, and execution into one place. Built a dual-sided platform that suggests research domains, professors, datasets, and starter projects while aggregating and summarizing papers from ArXiv. Integrates pretrained models and GitHub code into ready-to-run pipelines with a focus on sustainable, compute-efficient, and inclusive research workflows.",
-                    tags: ["Python", "LLM APIs", "Agentic AI", "Web Scraping"],
+                    title: "ShotWeaver",
+                    description: "A JSON-native, production-ready visual generation system built on Bria's FIBO model, designed for high-quality, scalable creative workflows. Built for production-scale rendering using CSV-driven automation.",
+                    tags: ["Python", "JSON", "FIBO", "Pipelines"],
                     icon: "Palette",
                     bgColor: "#FF6B4A",
                     textColor: "#F9F4EF",
                     buttonBg: "#F9F4EF",
                     buttonText: "#5D1725",
-                    github: "https://github.com/sahana2k/PaperClip"
+                    github: "https://github.com/sahana2k/ShotWeaver"
                 },
                 {
                     id: 5,
