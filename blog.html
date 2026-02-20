@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byte sized Breakthrough - Blog</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10/dist/framer-motion.js"></script>
+    
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #F9F4EF;
+        }
+
+        .serif-bold {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 900;
+        }
+        
+        .body-font {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Color palette */
+        .bg-cream { background-color: #F9F4EF; }
+        .bg-maroon { background-color: #5D1725; }
+        .bg-orange { background-color: #FF6B4A; }
+        .text-cream { color: #F9F4EF; }
+        .text-maroon { color: #5D1725; }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(93, 23, 37, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: #F9F4EF;
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 4rem;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #5D1725;
+            color: #F9F4EF;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #FF6B4A;
+            transform: rotate(90deg);
+        }
+
+        /* Blog post content styling */
+        .blog-content h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 900;
+            color: #5D1725;
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            line-height: 1.3;
+        }
+
+        .blog-content h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 700;
+            color: #5D1725;
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .blog-content p {
+            font-family: 'Outfit', sans-serif;
+            color: #5D1725;
+            font-size: 1.1rem;
+            line-height: 2;
+            margin-bottom: 1.75rem;
+        }
+
+        .blog-content blockquote {
+            border-left: 4px solid #FF6B4A;
+            padding-left: 2rem;
+            margin: 2.5rem 0;
+            font-style: italic;
+            color: #5D1725;
+            opacity: 0.9;
+            line-height: 2;
+        }
+
+        .blog-content ul, .blog-content ol {
+            margin-left: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .blog-content li {
+            font-family: 'Outfit', sans-serif;
+            color: #5D1725;
+            font-size: 1.1rem;
+            line-height: 2;
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-content strong {
+            color: #5D1725;
+            font-weight: 700;
+        }
+
+        .blog-content em {
+            color: #FF6B4A;
+            font-style: italic;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .blog-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .blog-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .blog-content h3 {
+                font-size: 1.25rem;
+            }
+
+            .blog-content p, .blog-content li {
+                font-size: 1rem;
+            }
+
+            .modal-close {
+                top: 1rem;
+                right: 1rem;
+            }
+        }
+
+        @media (max-width: 1024px) and (min-width: 768px) {
+            /* 2 columns on tablet */
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { motion, AnimatePresence } = Motion;
+
+        function BlogPage() {
+            const [selectedPost, setSelectedPost] = useState(null);
+
+            const blogPosts = [
+                {
+                    id: 1,
+                    title: "Data Is What Is. Context Is What It Means.",
+                    preview: "This post explores how AI models \"see,\" weight, and sometimes lose meaning inside their context windows.",
+                    date: "February 2026",
+                    readTime: "8 min read",
+                    content: `
+<blockquote>"The key to artificial intelligence has always been the representation." — Jeff Hawkins</blockquote>
+
+<p>How does ChatGPT or Gemini know what to answer when you ask:</p>
+
+<p><strong>"What should I do?"</strong></p>
+
+<p>It sounds simple.</p>
+
+<p>But it's impossible to answer well without context.</p>
+
+<p><em>About what?</em><br/>
+Career, relationship, health, school, travel?</p>
+
+<p><em>What options are available?</em><br/>
+What constraints exist — money, time, visa status, location, goals?<br/>
+What matters most to you?</p>
+
+<p>Without that, the question is empty.</p>
+
+<h2>What Is Context?</h2>
+
+<p>At its core, context is the background information that makes an input meaningful.<br/>
+The who. The what. The where. The when. The why.</p>
+
+<p>It's what gives shape to meaning.</p>
+
+<p>In AI systems, context governs nearly the entire user experience. Every response you receive is shaped not just by your latest prompt — but by everything the model can "see" at that moment.</p>
+
+<p>Technically speaking:</p>
+
+<p><strong>Context is the combination of input and output tokens an LLM can access at any given time.</strong></p>
+
+<p>But that definition is mechanical.</p>
+
+<p>The real distinction is this:</p>
+
+<p><em>Data is what is. Context is what it means.</em></p>
+
+<p>Data exists in isolation.<br/>
+Context connects it to intention.</p>
+
+<p>In essence, context is the interpretation layer that transforms data into action.</p>
+
+<h2>Thinking About Context in Three Tiers</h2>
+
+<p>We can view context across three layers:</p>
+
+<p><strong>Structural Context</strong> — definitions, relationships, hierarchies</p>
+
+<p><strong>Operational Context</strong> — rules, procedures, decision logic</p>
+
+<p><strong>Behavioral Context</strong> — patterns, preferences, historical lessons</p>
+
+<p>Together, these layers shape how an AI responds.</p>
+
+<h2>How Is Context Stored?</h2>
+
+<p>Context in AI isn't remembered the way humans remember.</p>
+
+<p>It is <em>represented, processed, and weighted</em> — not recalled.</p>
+
+<h3>1. Immediate Context (Inside a Conversation)</h3>
+
+<p>When we interact with an LLM, everything is converted into tokens.</p>
+
+<p>For example:</p>
+
+<p><strong>"How is context stored in AI?"</strong><br/>
+might become:</p>
+
+<p>[4021, 318, 2419, 287, 9552, 30]</p>
+
+<p>These tokens are placed inside the model's <strong>context window</strong> — the bounded space of information it can attend to at once.</p>
+
+<p>The model doesn't store facts.<br/>
+It processes relationships.</p>
+
+<h3>2. Long-Term Memory (Outside the Model)</h3>
+
+<p>If an AI system supports persistence, context is stored externally.</p>
+
+<p>Text is converted into high-dimensional embeddings and stored in a vector database.</p>
+
+<p>This pattern is known as:</p>
+
+<p><strong>Retrieval-Augmented Generation (RAG).</strong></p>
+
+<p>The model itself does not remember.</p>
+
+<p>The system retrieves relevant information and injects it back into the context window when needed.</p>
+
+<p>Memory, in this sense, is simulated.</p>
+
+<h2>How Does the Model Decide What Matters?</h2>
+
+<p>The relationship between LLMs and their context window isn't just about size.</p>
+
+<p>It's about <em>prioritization</em>.</p>
+
+<p>LLMs use a mechanism called <strong>attention</strong>.</p>
+
+<p>Each token:</p>
+
+<p>• Looks at other tokens<br/>
+• Assigns attention weights<br/>
+• Determines relevance</p>
+
+<p>Context is not a list of stored facts.</p>
+
+<p>It is a <em>weighted mathematical relationship between tokens</em> — a probability distribution shaped by prior inputs.</p>
+
+<h2>Why Do Models Still Struggle?</h2>
+
+<p>Even with large context windows, models still show:</p>
+
+<p>• Recency bias<br/>
+• Primacy bias<br/>
+• Attention dilution in dense middle regions</p>
+
+<p>This leads to a phenomenon known as:</p>
+
+<p><strong>Lost in the Middle</strong> — where information at the beginning and end of long prompts is prioritized, while information in the middle is often overlooked.</p>
+
+<p>Interestingly, this mirrors human cognitive bias.</p>
+
+<p>It's not an explicitly programmed flaw.
+It's an emergent property of the architecture.</p>
+
+<h2>How Much Context Can Be Stored?</h2>
+
+<p>Every LLM has a defined context window limit — the maximum number of tokens it can process at once.</p>
+
+<p>Some modern models support extremely large windows. For example, Claude Opus 4.5 supports up to one million tokens.</p>
+
+<p>But here's the paradox:</p>
+
+<p><strong>The more information you provide,<br/>
+the worse performance can become.</strong></p>
+
+<p>Larger windows increase complexity.<br/>
+Signal gets diluted.<br/>
+Attention spreads thinner.</p>
+
+<p>Bigger context does not automatically mean better reasoning.</p>
+
+<h2>Where This Is Going</h2>
+
+<p>Context is not memory.<br/>
+It is not a database.<br/>
+It is not understanding.</p>
+
+<p>It is <em>dynamic weighting</em> — a shifting mathematical landscape shaped by what came before.</p>
+
+<p>And we're still learning how to engineer it well.</p>
+
+<p>In the next post, I'll dive deeper into <strong>Lost in the Middle</strong> and explore how industry systems attempt to mitigate context degradation at scale.</p>
+
+<h2>References</h2>
+
+<p style="margin-bottom: 1.5rem;">
+<strong>1.</strong> Anthropic Engineering Team. <em>"Effective Context Engineering for AI Agents"</em><br/>
+<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents</a>
+</p>
+
+<p style="margin-bottom: 1.5rem;">
+<strong>2.</strong> testRigor. <em>"AI Context: Understanding the Foundation of Intelligent Systems"</em><br/>
+<a href="https://testrigor.com/blog/ai-context/" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://testrigor.com/blog/ai-context/</a>
+</p>
+
+<p style="margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #FF6B4A;">
+<strong>3.</strong> <em>Video Reference</em> (Highly Recommended)<br/>
+<a href="https://www.youtube.com/watch?v=-uW5-TaVXu4" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://www.youtube.com/watch?v=-uW5-TaVXu4</a>
+</p>
+
+<p style="margin-bottom: 1.5rem;">
+<strong>4.</strong> <em>Video Reference</em><br/>
+<a href="https://www.youtube.com/watch?v=-QVoIxEpFkM" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://www.youtube.com/watch?v=-QVoIxEpFkM</a>
+</p>
+
+<p style="margin-bottom: 1.5rem;">
+<strong>5.</strong> Atlan. <em>"Context Layer 101: AI Readiness Guide"</em><br/>
+<a href="https://atlan.com/know/ai-readiness/context-layer-101/" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://atlan.com/know/ai-readiness/context-layer-101/</a>
+</p>
+                    `
+                },
+                {
+                    id: 2,
+                    title: "Coming Soon",
+                    preview: "More insights on AI systems, machine learning architectures, and the invisible infrastructure shaping our digital world.",
+                    date: "Coming Soon",
+                    readTime: "",
+                    isPlaceholder: true
+                },
+                {
+                    id: 3,
+                    title: "Coming Soon",
+                    preview: "Stay tuned for more deep dives into technology, systems thinking, and computational perspectives.",
+                    date: "Coming Soon",
+                    readTime: "",
+                    isPlaceholder: true
+                }
+            ];
+
+            return (
+                <div className="bg-cream" style={{ minHeight: '100vh' }}>
+                    {/* Hero Section */}
+                    <section className="bg-maroon px-6 py-20" style={{ position: 'relative', paddingTop: '4rem' }}>
+                        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+                            {/* Back to Home Button */}
+                            <motion.a
+                                href="portfolio.html"
+                                className="body-font text-cream"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    fontSize: '0.95rem',
+                                    fontWeight: '600',
+                                    textDecoration: 'none',
+                                    marginBottom: '3rem',
+                                    padding: '0.5rem 1rem',
+                                    border: '2px solid rgba(249, 244, 239, 0.3)',
+                                    borderRadius: '20px',
+                                    transition: 'all 0.3s ease',
+                                    backgroundColor: 'rgba(249, 244, 239, 0.05)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#FF6B4A';
+                                    e.currentTarget.style.borderColor = '#FF6B4A';
+                                    e.currentTarget.style.color = '#5D1725';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgba(249, 244, 239, 0.05)';
+                                    e.currentTarget.style.borderColor = 'rgba(249, 244, 239, 0.3)';
+                                    e.currentTarget.style.color = '#F9F4EF';
+                                }}
+                            >
+                                ← Back to Home
+                            </motion.a>
+
+                            <div style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
+                                <motion.h1
+                                    className="serif-bold text-cream"
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '3rem' }}
+                                >
+                                    Byte sized Breakthrough
+                                </motion.h1>
+
+                                <motion.div
+                                    className="body-font text-cream"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    style={{ fontSize: '1.25rem', lineHeight: '2', opacity: 0.95 }}
+                                >
+                                    <p style={{ marginBottom: '2rem' }}>
+                                        Technology isn't just something I build; it's something I sit with.
+                                    </p>
+                                    <p style={{ marginBottom: '2rem' }}>
+                                        Beneath every interface is a system. Beneath every model is an assumption. Beneath every line of code is a decision.
+                                    </p>
+                                    <p style={{ marginBottom: '2rem' }}>
+                                        This blog is where I trace those layers. As a software engineer and graduate student in computer science, I'm constantly learning about machine learning architectures, data systems, AI agents, and the invisible infrastructure that shapes how we interact with the world. But more than that, I'm learning how to <em>see</em> technology, how pieces connect, where trade-offs hide, and how ideas evolve over time.
+                                    </p>
+                                    <p>
+                                        This isn't a documentation log. It's thinking in public, one system at a time.
+                                    </p>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Blog Posts Grid */}
+                    <section className="bg-cream px-6 py-24" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+                        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+                            <div className="blog-grid">
+                                {blogPosts.map((post, index) => (
+                                    <motion.div
+                                        key={post.id}
+                                        initial={{ opacity: 0, y: 30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.1 }}
+                                        onClick={() => !post.isPlaceholder && setSelectedPost(post)}
+                                        className="body-font"
+                                        style={{
+                                            backgroundColor: post.isPlaceholder ? 'rgba(93, 23, 37, 0.3)' : '#5D1725',
+                                            color: '#F9F4EF',
+                                            borderRadius: '24px',
+                                            padding: '2.5rem',
+                                            cursor: post.isPlaceholder ? 'default' : 'pointer',
+                                            transition: 'all 0.3s ease',
+                                            border: post.isPlaceholder ? '3px dashed rgba(249, 244, 239, 0.3)' : '3px solid transparent',
+                                            opacity: post.isPlaceholder ? 0.6 : 1
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (!post.isPlaceholder) {
+                                                e.currentTarget.style.transform = 'translateY(-8px)';
+                                                e.currentTarget.style.borderColor = '#FF6B4A';
+                                                e.currentTarget.style.boxShadow = '0 20px 40px rgba(93, 23, 37, 0.3)';
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (!post.isPlaceholder) {
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                e.currentTarget.style.borderColor = 'transparent';
+                                                e.currentTarget.style.boxShadow = 'none';
+                                            }
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                                            <span style={{ 
+                                                fontSize: '0.875rem', 
+                                                opacity: 0.8,
+                                                backgroundColor: 'rgba(255, 107, 74, 0.2)',
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '12px'
+                                            }}>
+                                                {post.date}
+                                            </span>
+                                            <span style={{ fontSize: '0.875rem', opacity: 0.7 }}>
+                                                {post.readTime}
+                                            </span>
+                                        </div>
+
+                                        <h3 className="serif-bold" style={{ fontSize: '1.75rem', marginBottom: '1.5rem', lineHeight: '1.3' }}>
+                                            {post.title}
+                                        </h3>
+
+                                        <p style={{ fontSize: '1rem', lineHeight: '1.75', opacity: 0.9, marginBottom: '2rem' }}>
+                                            {post.preview}
+                                        </p>
+
+                                        {!post.isPlaceholder && (
+                                            <div style={{ 
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                fontSize: '0.95rem',
+                                                fontWeight: '600',
+                                                color: '#FF6B4A',
+                                                transition: 'gap 0.3s ease'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.gap = '0.75rem'}
+                                            onMouseLeave={(e) => e.currentTarget.style.gap = '0.5rem'}
+                                            >
+                                                Read Full Post →
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Modal for Full Post */}
+                    <AnimatePresence>
+                        {selectedPost && !selectedPost.isPlaceholder && (
+                            <motion.div
+                                className="modal-overlay"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setSelectedPost(null)}
+                            >
+                                <motion.div
+                                    className="modal-content"
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0.9, opacity: 0 }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <button 
+                                        className="modal-close"
+                                        onClick={() => setSelectedPost(null)}
+                                        aria-label="Close"
+                                    >
+                                        ×
+                                    </button>
+
+                                    <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                        <span style={{ 
+                                            fontSize: '0.875rem',
+                                            color: '#5D1725',
+                                            backgroundColor: 'rgba(255, 107, 74, 0.2)',
+                                            padding: '0.35rem 0.85rem',
+                                            borderRadius: '12px',
+                                            fontWeight: '600'
+                                        }}>
+                                            {selectedPost.date}
+                                        </span>
+                                        <span style={{ fontSize: '0.875rem', color: '#5D1725', opacity: 0.7 }}>
+                                            {selectedPost.readTime}
+                                        </span>
+                                    </div>
+
+                                    <h1 className="serif-bold" style={{ 
+                                        fontSize: '2.5rem', 
+                                        color: '#5D1725', 
+                                        marginBottom: '2rem',
+                                        lineHeight: '1.2'
+                                    }}>
+                                        {selectedPost.title}
+                                    </h1>
+
+                                    <div 
+                                        className="blog-content"
+                                        dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                                    />
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Footer */}
+                    <section className="bg-maroon px-6 py-12">
+                        <div style={{ maxWidth: '80rem', margin: '0 auto', textAlign: 'center' }}>
+                            <p className="body-font text-cream" style={{ opacity: 0.8 }}>
+                                © 2026 Sahana Jayasimha Holkal
+                            </p>
+                            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                                <a href="https://www.linkedin.com/in/sahanahj" target="_blank" rel="noopener noreferrer" className="body-font text-cream" style={{ textDecoration: 'none', opacity: 0.8, transition: 'opacity 0.3s' }} onMouseEnter={(e) => e.target.style.opacity = '1'} onMouseLeave={(e) => e.target.style.opacity = '0.8'}>
+                                    LinkedIn
+                                </a>
+                                <a href="https://github.com/sahana2k" target="_blank" rel="noopener noreferrer" className="body-font text-cream" style={{ textDecoration: 'none', opacity: 0.8, transition: 'opacity 0.3s' }} onMouseEnter={(e) => e.target.style.opacity = '1'} onMouseLeave={(e) => e.target.style.opacity = '0.8'}>
+                                    GitHub
+                                </a>
+                                <a href="mailto:sahanahj21@gmail.com" className="body-font text-cream" style={{ textDecoration: 'none', opacity: 0.8, transition: 'opacity 0.3s' }} onMouseEnter={(e) => e.target.style.opacity = '1'} onMouseLeave={(e) => e.target.style.opacity = '0.8'}>
+                                    Email
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BlogPage />);
+    </script>
+</body>
+</html>
