@@ -545,7 +545,7 @@
                                 </motion.p>
 
                                 <motion.a
-                                    href="blog.html"
+                                    href="#my-journey"
                                     className="body-font bg-orange text-maroon rounded-full shadow-2xl"
                                     style={{ padding: '1.25rem 2.5rem', fontSize: '1.125rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}
                                     initial={{ opacity: 0, y: 20 }}
@@ -554,7 +554,7 @@
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
-                                    Visit Blog
+                                    Explore My Journey
                                 </motion.a>
 
                                 {/* Quick Navigation Links */}
@@ -564,32 +564,6 @@
                                     transition={{ delay: 0.8 }}
                                     style={{ marginTop: '2rem', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}
                                 >
-                                    <a
-                                        href="#my-journey"
-                                        className="body-font text-cream"
-                                        style={{
-                                            fontSize: '0.95rem',
-                                            fontWeight: '600',
-                                            textDecoration: 'none',
-                                            padding: '0.5rem 1rem',
-                                            border: '2px solid rgba(249, 244, 239, 0.3)',
-                                            borderRadius: '20px',
-                                            transition: 'all 0.3s ease',
-                                            backgroundColor: 'rgba(249, 244, 239, 0.05)'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.backgroundColor = '#FF6B4A';
-                                            e.target.style.borderColor = '#FF6B4A';
-                                            e.target.style.color = '#5D1725';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.backgroundColor = 'rgba(249, 244, 239, 0.05)';
-                                            e.target.style.borderColor = 'rgba(249, 244, 239, 0.3)';
-                                            e.target.style.color = '#F9F4EF';
-                                        }}
-                                    >
-                                        My Journey
-                                    </a>
                                     <a
                                         href="#featured-work"
                                         className="body-font text-cream"
@@ -667,6 +641,32 @@
                                         }}
                                     >
                                         Beyond the Code
+                                    </a>
+                                    <a
+                                        href="blog.html"
+                                        className="body-font text-cream"
+                                        style={{
+                                            fontSize: '0.95rem',
+                                            fontWeight: '600',
+                                            textDecoration: 'none',
+                                            padding: '0.5rem 1rem',
+                                            border: '2px solid rgba(249, 244, 239, 0.3)',
+                                            borderRadius: '20px',
+                                            transition: 'all 0.3s ease',
+                                            backgroundColor: 'rgba(249, 244, 239, 0.05)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.backgroundColor = '#FF6B4A';
+                                            e.target.style.borderColor = '#FF6B4A';
+                                            e.target.style.color = '#5D1725';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.backgroundColor = 'rgba(249, 244, 239, 0.05)';
+                                            e.target.style.borderColor = 'rgba(249, 244, 239, 0.3)';
+                                            e.target.style.color = '#F9F4EF';
+                                        }}
+                                    >
+                                        Blog
                                     </a>
                                     <a
                                         href="https://www.linkedin.com/in/sahanahj"
