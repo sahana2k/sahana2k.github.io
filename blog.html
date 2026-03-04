@@ -406,7 +406,7 @@ It is not understanding.</p>
                 {
                     id: 2,
                     title: "Lost in the Middle",
-                    preview: "You can paste an entire \"answer key\" into an LLM's prompt… and still get the wrong answer. That failure has a name: Lost in the Middle — models tend to notice what's at the start and end, but miss key details buried halfway through. As context windows explode from thousands to millions of tokens, this blind spot isn't disappearing, it's just stretching. In this post, we'll unpack why it happens, what the research shows, and how to prompt around it today.",
+                    preview: "LLMs can read long prompts but they don’t always use them. Lost in the Middle is when crucial details buried halfway through get ignored.",
                     date: "March 2026",
                     readTime: "10 min read",
                     content: `
@@ -414,7 +414,7 @@ It is not understanding.</p>
 
 <p>You've probably seen this happen in real life:</p>
 
-<p>You paste <em>everything</em> into the prompt — the spec, the logs, the API docs, the exact error, even the answer — and the model still replies with something confidently wrong.</p>
+<p>You paste <em>everything</em> into the prompt, the spec, the logs, the API docs, the exact error, even the answer and the model still replies with something confidently wrong.</p>
 
 <p>It's not always "hallucination." Sometimes it's something more specific (and more frustrating):</p>
 
@@ -484,7 +484,7 @@ It is not understanding.</p>
 
 <p>In other words:</p>
 
-<p><strong>Giving the model the answer key made it perform worse than not giving it any notes at all — because the answer key was buried in the middle.</strong></p>
+<p><strong>Giving the model the answer key made it perform worse than not giving it any notes at all, because the answer key was buried in the middle.</strong></p>
 
 <p>That's the "lost" part. It's not that the model can't answer. It's that it can't reliably <em>find and use</em> what's already in front of it.</p>
 
@@ -496,13 +496,13 @@ It is not understanding.</p>
 
 <p>When the prompt fits inside both the standard and extended context window, <strong>extended-context versions often perform nearly identically</strong> to their non-extended counterparts.</p>
 
-<p>Even more bluntly: in their evaluations, the 16K version doesn't "solve" the issue — it tends to <strong>stretch the same failure mode across a longer span</strong>.</p>
+<p>Even more bluntly: in their evaluations, the 16K version doesn't "solve" the issue, it tends to <strong>stretch the same failure mode across a longer span</strong>.</p>
 
 <p>The authors phrase it as: model performance can <strong>degrade as context grows</strong>, and "more room" doesn't automatically translate into "better use."</p>
 
 <p>There's also a brutal retrieval-augmented reality check:</p>
 
-<p>When retrieving Wikipedia passages for NaturalQuestions-Open, performance saturates long before retriever recall saturates — and <strong>using 50 documents instead of 20 only marginally improves results (~1.5% for GPT‑3.5‑Turbo and ~1% for Claude‑1.3)</strong>.</p>
+<p>When retrieving Wikipedia passages for NaturalQuestions-Open, performance saturates long before retriever recall saturates and <strong>using 50 documents instead of 20 only marginally improves results (~1.5% for GPT‑3.5‑Turbo and ~1% for Claude‑1.3)</strong>.</p>
 
 <p>Or in plain English:</p>
 
