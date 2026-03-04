@@ -244,7 +244,7 @@ The who. The what. The where. The when. The why.</p>
 
 <p>It's what gives shape to meaning.</p>
 
-<p>In AI systems, context governs nearly the entire user experience. Every response you receive is shaped not just by your latest prompt — but by everything the model can "see" at that moment.</p>
+<p>In AI systems, context governs nearly the entire user experience. Every response you receive is shaped not just by your latest prompt , but by everything the model can "see" at that moment.</p>
 
 <p>Technically speaking:</p>
 
@@ -277,7 +277,7 @@ Context connects it to intention.</p>
 
 <p>Context in AI isn't remembered the way humans remember.</p>
 
-<p>It is <em>represented, processed, and weighted</em> — not recalled.</p>
+<p>It is <em>represented, processed, and weighted</em> , not recalled.</p>
 
 <h3>1. Immediate Context (Inside a Conversation)</h3>
 
@@ -290,7 +290,7 @@ might become:</p>
 
 <p>[4021, 318, 2419, 287, 9552, 30]</p>
 
-<p>These tokens are placed inside the model's <strong>context window</strong> — the bounded space of information it can attend to at once.</p>
+<p>These tokens are placed inside the model's <strong>context window</strong> , the bounded space of information it can attend to at once.</p>
 
 <p>The model doesn't store facts.<br/>
 It processes relationships.</p>
@@ -327,7 +327,7 @@ It processes relationships.</p>
 
 <p>Context is not a list of stored facts.</p>
 
-<p>It is a <em>weighted mathematical relationship between tokens</em> — a probability distribution shaped by prior inputs.</p>
+<p>It is a <em>weighted mathematical relationship between tokens</em> , a probability distribution shaped by prior inputs.</p>
 
 <h2>Why Do Models Still Struggle?</h2>
 
@@ -343,14 +343,13 @@ It processes relationships.</p>
 
 <p>Interestingly, this mirrors human cognitive bias.</p>
 
-<p>It's not an explicitly programmed flaw.<br/>
+<p>It's not an explicitly programmed flaw.
 It's an emergent property of the architecture.</p>
 
 <h2>How Much Context Can Be Stored?</h2>
 
-<p>Every LLM has a defined context window limit — the maximum number of tokens it can process at once.</p>
-
-<p>Some modern models support extremely large windows. For example, Claude Opus 4.5 supports up to one million tokens.</p>
+<p>Every LLM has a defined context window limit , the maximum number of tokens it can process at once.</p>
+<p>You can check out the context windows of each model here: <a href="https://models.dev/" target="_blank" rel="noopener noreferrer">Models.dev — An open-source database of AI models</a>.</p><p>Some modern models support extremely large windows. For example, Claude Opus 4.5 supports up to one million tokens.</p>
 
 <p>But here's the paradox:</p>
 
@@ -369,7 +368,7 @@ Attention spreads thinner.</p>
 It is not a database.<br/>
 It is not understanding.</p>
 
-<p>It is <em>dynamic weighting</em> — a shifting mathematical landscape shaped by what came before.</p>
+<p>It is <em>dynamic weighting</em> , a shifting mathematical landscape shaped by what came before.</p>
 
 <p>And we're still learning how to engineer it well.</p>
 
@@ -405,188 +404,11 @@ It is not understanding.</p>
                 },
                 {
                     id: 2,
-                    title: "Lost in the Middle",
-                    preview: "You can paste an entire \"answer key\" into an LLM's prompt… and still get the wrong answer. That failure has a name: Lost in the Middle — models tend to notice what's at the start and end, but miss key details buried halfway through. As context windows explode from thousands to millions of tokens, this blind spot isn't disappearing, it's just stretching. In this post, we'll unpack why it happens, what the research shows, and how to prompt around it today.",
-                    date: "March 2026",
-                    readTime: "10 min read",
-                    content: `
-<h2>Lost in the Middle: when "more context" becomes a blind spot</h2>
-
-<p>You've probably seen this happen in real life:</p>
-
-<p>You paste <em>everything</em> into the prompt — the spec, the logs, the API docs, the exact error, even the answer — and the model still replies with something confidently wrong.</p>
-
-<p>It's not always "hallucination." Sometimes it's something more specific (and more frustrating):</p>
-
-<p>The model is <strong>worst at using information that appears in the middle</strong> of a long context.</p>
-
-<p>That pattern has a name: <strong>Lost in the Middle</strong>.</p>
-
-<h2>What is "Lost in the Middle"?</h2>
-
-<p><strong>Lost in the Middle</strong> is the tendency for language models to perform best when relevant information is placed at the <strong>very beginning</strong> or <strong>very end</strong> of the input and to perform significantly worse when the same information is placed <strong>somewhere in the middle</strong>.</p>
-
-<p>A simple way to visualize it:</p>
-
-<p>• Put the answer in the first chunk → performance is high<br/>
-• Put the answer in the last chunk → performance is high<br/>
-• Put the answer in the middle → performance dips</p>
-
-<p>The result looks like a <strong>U-shaped curve</strong>, and the paper explicitly connects this to <strong>primacy bias</strong> (favoring early items) and <strong>recency bias</strong> (favoring late items).</p>
-
-<p>For a non-technical mental model: imagine building an enormous home library. You keep buying shelves because you <em>can</em>. But when you need one specific book, you still end up scanning the first shelf, then the last shelf… and somehow missing the one you came for in the middle.</p>
-
-<p>That's the core distinction this phenomenon exposes:</p>
-
-<p><strong>Accepting context is not the same as using context.</strong></p>
-
-<h2>Why does this happen at all?</h2>
-
-<p>At first glance, it feels absurd. Why would a "supercomputer brain" care about the <em>order</em> of text? It doesn't get tired halfway through.</p>
-
-<p>But the issue isn't fatigue, it's <strong>how these systems are trained and how they condition on inputs</strong>.</p>
-
-<p>The <em>Lost in the Middle</em> paper tests a mix of models and settings, and then digs into three big contributors:</p>
-
-<p><strong>1. Model architecture (decoder-only vs. encoder–decoder)</strong><br/>
-<strong>2. Whether the model can "see" the query early enough (query-aware contextualization)</strong><br/>
-<strong>3. Training dynamics, including instruction tuning</strong></p>
-
-<p>Let's unpack the most intuitive part first.</p>
-
-<h2>Decoder-only models and the "rear-view mirror" problem</h2>
-
-<p>Most popular chat-style LLMs are <strong>decoder-only</strong> Transformers (GPT-style). A key constraint: <strong>they use causal attention</strong> — meaning tokens can attend only to <strong>earlier</strong> tokens.</p>
-
-<p>That matters <em>a lot</em> when prompts are formatted like this:</p>
-
-<blockquote>[Document 1] [Document 2] … [Document 20] [Question]</blockquote>
-
-<p>In that common layout, the model processes the documents <em>before</em> it sees the question — and because of causal masking, it can't "contextualize" those earlier documents using the query tokens that appear later. The paper calls the fix <strong>query-aware contextualization</strong>, and it's exactly what it sounds like: make the query visible <em>earlier</em>.</p>
-
-<p>So it's not that the model "forgets" in a human way. It's that the system ends up leaning on heuristics: what usually matters is near the start (instructions) and near the end (fresh tokens), and the middle becomes a danger zone.</p>
-
-<p>The paper even links the U-shape to a classic psychology pattern: the <strong>serial-position effect</strong> — humans also tend to recall the first and last items in a list best.</p>
-
-<h2>The experiment that made me do a double-take: "open book" got worse than "closed book"</h2>
-
-<p>Here's the moment where <em>Lost in the Middle</em> stops being an academic curiosity and becomes a practical warning label.</p>
-
-<p>The researchers ran a multi-document QA setup:</p>
-
-<p>• The model gets a factual question.<br/>
-• In the <strong>closed-book</strong> condition, it gets <em>no documents</em>. It must rely on its internal (parametric) knowledge.<br/>
-• In the <strong>open-book</strong> condition, it gets a pile of retrieved documents, and <strong>exactly one contains the answer</strong>.</p>
-
-<p>Now, you'd expect open-book to crush closed-book. After all, the answer is literally present.</p>
-
-<p>But when the answer-containing document was placed <strong>in the middle</strong>, GPT‑3.5‑Turbo's performance on the open-book task dropped <strong>below its closed-book score (56.1%)</strong>.</p>
-
-<p>In other words:</p>
-
-<p><strong>Giving the model the answer key made it perform worse than not giving it any notes at all — because the answer key was buried in the middle.</strong></p>
-
-<p>That's the "lost" part. It's not that the model can't answer. It's that it can't reliably <em>find and use</em> what's already in front of it.</p>
-
-<h2>"We have bigger context windows now. Surely this is fixed?"</h2>
-
-<p>This is where a lot of AI discourse gets lazy.</p>
-
-<p>Yes, context windows have grown. But the paper shows something uncomfortable:</p>
-
-<p>When the prompt fits inside both the standard and extended context window, <strong>extended-context versions often perform nearly identically</strong> to their non-extended counterparts.</p>
-
-<p>Even more bluntly: in their evaluations, the 16K version doesn't "solve" the issue — it tends to <strong>stretch the same failure mode across a longer span</strong>.</p>
-
-<p>The authors phrase it as: model performance can <strong>degrade as context grows</strong>, and "more room" doesn't automatically translate into "better use."</p>
-
-<p>There's also a brutal retrieval-augmented reality check:</p>
-
-<p>When retrieving Wikipedia passages for NaturalQuestions-Open, performance saturates long before retriever recall saturates — and <strong>using 50 documents instead of 20 only marginally improves results (~1.5% for GPT‑3.5‑Turbo and ~1% for Claude‑1.3)</strong>.</p>
-
-<p>Or in plain English:</p>
-
-<p><strong>Adding more haystack doesn't help if the model is bad at finding needles.</strong></p>
-
-<p>And that has real costs: more tokens means more latency and more spend, often for negligible gains.</p>
-
-<h2>Would a different architecture help?</h2>
-
-<p>The authors tested <strong>encoder–decoder</strong> models (Flan‑UL2 and Flan‑T5‑XXL) to see if bidirectional encoding changes the shape of the curve.</p>
-
-<p>What they found is nuanced (and useful):</p>
-
-<p>• Encoder–decoder models are <strong>more robust to position changes</strong> <em>when evaluated within the sequence lengths they were trained on</em> (e.g., Flan‑UL2's encoder trained up to 2048 tokens, Flan‑T5‑XXL up to 512).<br/>
-• But when evaluated on <strong>longer sequences than training</strong>, even these models begin to show the same U-shaped degradation.</p>
-
-<p>So yes: architecture can help. But it's not a magic wand. Generalizing beyond training lengths is still hard.</p>
-
-<h2>Is instruction fine-tuning to blame?</h2>
-
-<p>It's tempting to blame "chat tuning" and say: <em>The model learns to focus on the beginning because the instruction is always placed there.</em></p>
-
-<p>The paper checks this directly by comparing an instruction-tuned model (MPT‑30B‑Instruct) with its base model (MPT‑30B). Result:</p>
-
-<p><strong>Both show the U-shaped curve.</strong> Instruction tuning raises overall performance, but the positional bias trend remains.</p>
-
-<p>So the clean takeaway is:</p>
-
-<p>• Fine-tuning doesn't <em>create</em> the phenomenon from nothing.<br/>
-• But depending on formatting conventions, it may still <strong>reinforce where "important things" usually appear</strong>.</p>
-
-<h2>What actually helps today?</h2>
-
-<p>The paper proposes (and tests) a set of pragmatic mitigations. Here are the ones worth operationalizing immediately:</p>
-
-<h3>1) Put the most important stuff first</h3>
-
-<p>If models overweight the beginning, don't fight it. <strong>Rerank documents</strong> so the most relevant passages show up early.</p>
-
-<h3>2) Give the model less to read</h3>
-
-<p>More context can increase the reasoning burden and dilute signal. <strong>Truncate aggressively</strong>: drop low-relevance chunks instead of maxing the window.</p>
-
-<h3>3) Use "query-aware contextualization" (the query sandwich)</h3>
-
-<p>Instead of putting the question only at the end, place it <strong>before and after</strong> the context.</p>
-
-<p>This dramatically improves the synthetic key–value retrieval task: for example, GPT‑3.5‑Turbo (16K) reaches <strong>perfect performance</strong> at 300 key–value pairs with query-aware contextualization, whereas without it the model hits a low point of <strong>45.6%</strong>.</p>
-
-<p>One important caveat: the same trick <strong>barely changes trends</strong> in the multi-document QA setting (it helps a bit in some placements, but doesn't "flatten the curve").</p>
-
-<p>So: it's a powerful tool — but not a universal cure.</p>
-
-<h3>4) Don't confuse "fits" with "finds"</h3>
-
-<p>This is the bigger meta-point of the paper: the industry is obsessed with <em>capacity</em> — "can it fit a million tokens?" — but evaluation should focus on <em>utilization</em> — "can it reliably retrieve and use what matters, wherever it is?"</p>
-
-<h2>The uncomfortable question this raises</h2>
-
-<p>If we keep racing toward longer and longer context windows without solving the utilization problem, we risk building systems that can <em>store</em> entire libraries…</p>
-
-<p>…but still can't reliably answer a question when the crucial sentence is on page 37.</p>
-
-<p>Or said differently:</p>
-
-<p><strong>Are we optimizing for bigger memory, when what we actually need is better reading?</strong></p>
-
-<h2>References</h2>
-
-<p style="margin-bottom: 1.5rem;">
-<strong>1.</strong> Liu, Nelson F., et al. <em>"Lost in the Middle: How Language Models Use Long Contexts"</em><br/>
-<a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://arxiv.org/abs/2307.03172</a>
-</p>
-
-<p style="margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #FF6B4A;">
-<strong>2.</strong> <em>Video Reference</em> (Highly Recommended)<br/>
-<a href="https://www.youtube.com/watch?v=-uW5-TaVXu4" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://www.youtube.com/watch?v=-uW5-TaVXu4</a>
-</p>
-
-<p style="margin-bottom: 1.5rem;">
-<strong>3.</strong> Zhu, Carol. <em>"Lost in the Middle: How Language Models Use Long Contexts"</em><br/>
-<a href="https://medium.com/@carolzhu/lost-in-the-middle-how-language-models-use-long-contexts-2891830f8000" target="_blank" rel="noopener noreferrer" style="color: #FF6B4A; text-decoration: none; border-bottom: 1px solid #FF6B4A;">https://medium.com/@carolzhu/lost-in-the-middle-how-language-models-use-long-contexts-2891830f8000</a>
-</p>
-                    `
+                    title: "Coming Soon",
+                    preview: "More insights on AI systems, machine learning architectures, and the invisible infrastructure shaping our digital world.",
+                    date: "Coming Soon",
+                    readTime: "",
+                    isPlaceholder: true
                 },
                 {
                     id: 3,
@@ -605,7 +427,7 @@ It is not understanding.</p>
                         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
                             {/* Back to Home Button */}
                             <motion.a
-                                href="portfolio.html"
+                                href="index.html"
                                 className="body-font text-cream"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -662,10 +484,10 @@ It is not understanding.</p>
                                         Beneath every interface is a system. Beneath every model is an assumption. Beneath every line of code is a decision.
                                     </p>
                                     <p style={{ marginBottom: '2rem' }}>
-                                        This blog is where I trace those layers. As a software engineer and graduate student in computer science, I'm constantly learning about machine learning architectures, data systems, AI agents, and the invisible infrastructure that shapes how we interact with the world. But more than that, I'm learning how to <em>see</em> technology—how pieces connect, where trade-offs hide, and how ideas evolve over time.
+                                        This blog is where I trace those layers. As a software engineer and graduate student in computer science, I'm constantly learning about machine learning architectures, data systems, AI agents, and the invisible infrastructure that shapes how we interact with the world. But more than that, I'm learning how to <em>see</em> technology, how pieces connect, where trade-offs hide, and how ideas evolve over time.
                                     </p>
                                     <p>
-                                        This isn't a documentation log. It's thinking in public—one system at a time.
+                                        This isn't a documentation log. It's thinking in public, one system at a time.
                                     </p>
                                 </motion.div>
                             </div>
